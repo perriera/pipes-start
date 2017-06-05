@@ -1,18 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: [ './app.component.css' ]
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+
+  timerChanged = new Subject<number>();
+  subscription: Subscription;
+
+  count = 0;
 
   appStatus = new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve('stable');
     }, 2000);
   });
-  
+
   servers = [
     {
       instanceType: 'medium',
@@ -41,6 +48,23 @@ export class AppComponent {
   ];
 
   filteredStatus = '';
+
+  ngOnInit() {
+    this.subscription = this.timerChanged.subscribe(
+      (value: number) => {
+        this.appStatus = new Promise((resolve, reject) => {
+          resolve('stable x ' + value);
+        });
+      }
+    );
+    setInterval(() => {
+      this.timerChanged.next(++this.count);
+    }, 3000);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   getStatusClasses(server: { instanceType: string, name: string, status: string, started: Date }) {
     return {
