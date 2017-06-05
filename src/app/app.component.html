@@ -4,7 +4,9 @@
       <input type="text" [(ngModel)]="filteredStatus">
       <br>
       <button class="btn btn-primary" (click)="addServer()">Add Server</button>
-      <hr>
+      <br><br>
+      <h2>App Status: {{appStatus | async }} </h2>
+      <hr> 
       <ul class="list-group">
         <li
           class="list-group-item"
@@ -17,7 +19,7 @@
           <strong>{{ server.name | shorten: 15: 0 }}</strong> |
           {{ server.instanceType | uppercase }} |
           {{ server.started | date: 'fullDate' | uppercase }}
-        </li>
+        </li> 
       </ul>
     </div>
   </div>
